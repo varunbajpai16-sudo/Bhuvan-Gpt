@@ -4,3 +4,504 @@
 @media(min-width:1000px){.hero{min-height:0;flex:1}.hero-copy{padding-top:clamp(48px,7vh,100px)}.map-frame{width:60%}.feature-row{margin-top:34px}.stats-bar{min-height:100px;flex-shrink:0}}
 @media(max-width:760px){body{overflow:auto}.app-viewport{height:auto;min-height:100dvh;overflow:visible}.site-shell{height:auto;min-height:100dvh}.topbar{height:62px;padding-inline:17px}.main-nav{display:none;position:absolute;top:61px;left:0;right:0;height:auto;flex-direction:column;align-items:stretch;gap:0;padding:10px 18px 14px;background:white;border-bottom:1px solid #e4edf7;box-shadow:0 10px 20px #143c5b12}.main-nav.nav-open{display:flex}.nav-link{height:38px}.nav-link.active:after{left:0;right:auto;bottom:3px;width:22px}.hero{min-height:620px;flex:none}.map-frame{top:185px;width:100%;height:435px;opacity:.68;clip-path:polygon(14% 0,100% 0,100% 100%,0 100%,0 25%)}.map-wash{inset:150px 0 0;background:linear-gradient(180deg,#f7fbff 0%,rgba(247,251,255,.78) 22%,rgba(247,251,255,.12) 57%,transparent 100%)}.hero-copy{padding:35px 23px 24px}.hero h1{font-size:clamp(34px,8vw,45px);letter-spacing:-1.4px}.hero-description{font-size:13px;margin:13px 0 19px}.search-box{height:44px}.feature-row{justify-content:space-between;gap:7px;margin-top:27px}.feature{min-width:0;gap:6px}.feature-icon{width:42px;height:42px}.feature-title{font-size:9px}.map-tools{right:10px;top:16px}.map-attribution{font-size:7px}.stats-bar{padding:17px 14px}.stat-top{font-size:16px}.stat-label{font-size:9px}}
 @media(max-width:380px){.hero-copy{padding-inline:17px}.hero h1{font-size:32px}.feature-icon{width:36px;height:36px}.feature-icon svg{width:19px}.feature-title{font-size:8px}.feature-row{gap:3px}}
+
+
+
+.loading-screen {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 580px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #dceaf6;
+  color: #0f2745;
+  font-family: Inter, "Segoe UI", sans-serif;
+}
+
+/* Map covers the entire screen */
+.loading-map {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background: #dceaf6;
+}
+
+.loading-map .leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #dceaf6;
+  cursor: default;
+}
+
+/* Light blue wash for readability */
+.loading-map-tint {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(247, 251, 255, 0.80) 0%,
+      rgba(239, 247, 255, 0.67) 45%,
+      rgba(226, 240, 252, 0.82) 100%
+    );
+}
+
+/* Subtle geospatial grid */
+.loading-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.20;
+  background-image:
+    linear-gradient(
+      rgba(37, 99, 235, 0.16) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(37, 99, 235, 0.16) 1px,
+      transparent 1px
+    );
+  background-size: 65px 65px;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+}
+
+/* Header */
+.loading-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 25px 5%;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.23);
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(12px);
+}
+
+.loading-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loading-logo {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  color: #fff;
+  border-radius: 14px;
+  background: #1d4ed8;
+  box-shadow: 0 8px 22px rgba(29, 78, 216, 0.22);
+}
+
+.loading-brand h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  color: #10243e;
+}
+
+.loading-brand h2 span {
+  color: #1d4ed8;
+}
+
+.loading-brand p {
+  margin: 4px 0 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #526780;
+}
+
+.loading-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border: 1px solid rgba(16, 185, 129, 0.18);
+  border-radius: 30px;
+  background: rgba(236, 253, 245, 0.82);
+  color: #047857;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+  animation: statusPulse 1.5s infinite;
+}
+
+/* Main content */
+.loading-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(570px, calc(100% - 40px));
+  transform: translate(-50%, -45%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Satellite animation */
+.loading-orbit {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 118px;
+  height: 118px;
+  margin-bottom: 26px;
+}
+
+.orbit-ring {
+  position: absolute;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 50%;
+}
+
+.orbit-ring-one {
+  width: 82px;
+  height: 82px;
+  animation: orbitRotate 8s linear infinite;
+}
+
+.orbit-ring-two {
+  width: 112px;
+  height: 112px;
+  border-style: dashed;
+  animation: orbitRotate 14s linear infinite reverse;
+}
+
+.orbit-icon {
+  display: grid;
+  place-items: center;
+  width: 65px;
+  height: 65px;
+  color: white;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #2563eb, #0e7490);
+  box-shadow:
+    0 12px 30px rgba(37, 99, 235, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  animation: iconFloat 2.5s ease-in-out infinite;
+}
+
+.orbit-point {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #06b6d4;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+}
+
+.orbit-point-one {
+  top: 8px;
+  right: 22px;
+}
+
+.orbit-point-two {
+  bottom: 13px;
+  left: 17px;
+  background: #2563eb;
+}
+
+/* Headline and text */
+.loading-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #1d4ed8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.loading-content h1 {
+  margin: 22px 0 14px;
+  color: #10243e;
+  font-size: clamp(34px, 4.3vw, 54px);
+  line-height: 1.12;
+  letter-spacing: -2.2px;
+  font-weight: 800;
+}
+
+.loading-content h1 span {
+  color: #1d4ed8;
+}
+
+.loading-description {
+  margin: 0;
+  color: #53677f;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+/* Progress bar */
+.loading-progress {
+  width: min(380px, 100%);
+  margin-top: 34px;
+  text-align: left;
+}
+
+.progress-heading,
+.progress-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progress-heading {
+  margin-bottom: 12px;
+  color: #344b65;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.progress-number {
+  color: #1d4ed8;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(148, 163, 184, 0.30);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2563eb, #06b6d4);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.25);
+  transition: width 120ms linear;
+}
+
+.progress-footer {
+  justify-content: flex-start;
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.loading-spinner {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  border: 2px solid rgba(37, 99, 235, 0.18);
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: orbitRotate 0.8s linear infinite;
+}
+
+/* Geographic coordinates */
+.loading-coordinates {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 29px;
+  color: #526780;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.loading-coordinates svg {
+  color: #2563eb;
+}
+
+.coordinate-divider {
+  color: #94a3b8;
+}
+
+/* Footer */
+.loading-footer {
+  position: absolute;
+  right: 5%;
+  bottom: 0;
+  left: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  min-height: 56px;
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  color: #526780;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.footer-separator {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #06b6d4;
+}
+
+/* Animations */
+@keyframes orbitRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes statusPulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Tablet and mobile */
+@media (max-width: 640px) {
+  .loading-screen {
+    min-height: 560px;
+  }
+
+  .loading-header {
+    padding: 17px 18px;
+  }
+
+  .loading-logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .loading-brand h2 {
+    font-size: 19px;
+  }
+
+  .loading-brand p {
+    font-size: 8px;
+    letter-spacing: 1.3px;
+  }
+
+  .loading-status {
+    gap: 7px;
+    padding: 9px 10px;
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .loading-content {
+    transform: translate(-50%, -43%);
+  }
+
+  .loading-orbit {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 22px;
+  }
+
+  .orbit-ring-one {
+    width: 72px;
+    height: 72px;
+  }
+
+  .orbit-ring-two {
+    width: 96px;
+    height: 96px;
+  }
+
+  .orbit-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 19px;
+  }
+
+  .loading-eyebrow {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .loading-content h1 {
+    margin-top: 19px;
+    font-size: clamp(32px, 8vw, 43px);
+    letter-spacing: -1.5px;
+  }
+
+  .loading-description {
+    max-width: 330px;
+    font-size: 12px;
+  }
+
+  .desktop-break {
+    display: none;
+  }
+
+  .loading-progress {
+    margin-top: 28px;
+  }
+
+  .loading-footer {
+    gap: 8px;
+    padding: 12px 0;
+    font-size: 7px;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .loading-status {
+    font-size: 7px;
+  }
+
+  .loading-brand {
+    gap: 8px;
+  }
+
+  .loading-brand h2 {
+    font-size: 17px;
+  }
+
+  .loading-footer {
+    font-size: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring,
+  .orbit-icon,
+  .status-dot,
+  .loading-spinner {
+    animation: none;
+  }
+}
