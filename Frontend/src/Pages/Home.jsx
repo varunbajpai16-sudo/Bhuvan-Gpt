@@ -137,27 +137,6 @@ export default function Home() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  // Show the loading page only once per browser tab session.
-  const [isLoading, setIsLoading] = useState(() => {
-    if (typeof window === "undefined") return false;
-
-    const hasShownLoading = sessionStorage.getItem("bhuvanLoadingShown_v2");
-
-    if (hasShownLoading) return false;
-
-    sessionStorage.setItem("bhuvanLoadingShown_v2", "true");
-    return true;
-  });
-
-  useEffect(() => {
-    if (!isLoading) return;
-
-    const timer = setTimeout(() => {
-      setIsLoading(true);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [isLoading]);
 
   const navItems = [
 
@@ -217,9 +196,6 @@ export default function Home() {
 
   };
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
 
   return (
 
