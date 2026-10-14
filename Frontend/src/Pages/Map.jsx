@@ -250,19 +250,11 @@ export default function Map({ onSubmitQuery, onHistoricalImagery }) {
 
 
 
-    tileRef.current = L.tileLayer(TILE_URLS.satellite, {
-
-
-
-      maxZoom: 19,
-
-
-
-      attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics",
-
-
-
-    }).addTo(map);
+ tileRef.current = L.tileLayer(TILE_URLS.satellite, {
+  maxZoom: 22,
+  maxNativeZoom: 19,
+  attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics",
+}).addTo(map);
 
 
 
